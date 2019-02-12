@@ -123,20 +123,21 @@ public class GroupMessengerProvider extends ContentProvider {
     }
     private  Cursor getQueryResult(Uri uri, final String selectionClause, Context context)
     {
+        // References -https://developer.android.com/reference/android/database/MatrixCursor - Used to learn the concept of matrixCursor. It offers a function addRow(object[] columns) to add the row.
         try {
+            // Creating an object of MatrixCursor which is basically the implementation of the cursor we can use
             MatrixCursor matrixCursor = new MatrixCursor(new String[]{"key", "value"});
-            FileInputStream inputstream;
-            inputstream = context.openFileInput(selectionClause);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
+            // Creating a stream object. Various other alternate byte/character streams can be used to read and write the data.
+            FileInputStream inputstream = context.openFileInput(selectionClause);
             int res =0;
+            // creating an object of StringBuilder to efficiently append the data which is read using read() function. Read() function returns a byte and hence we use while loop to read all the bytes. It returns -1 if its empty.
             StringBuilder sb = new StringBuilder();
-//            while((res = inputstream.read())!= -1)
-//            {
-//                sb.append((char) res );
-//
-//            }
-            matrixCursor.addRow( new String[]{selectionClause, reader.readLine()} );
-            reader.close();
+            while((res = inputstream.read())!= -1)
+            {
+                sb.append((char) res );
+
+            }
+            matrixCursor.addRow( new String[]{selectionClause, sb.toString()} );
             inputstream.close();
             return matrixCursor;
         }
