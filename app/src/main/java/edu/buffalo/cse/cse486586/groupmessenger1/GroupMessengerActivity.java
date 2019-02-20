@@ -49,12 +49,6 @@ public class GroupMessengerActivity extends Activity {
         TextView tv = (TextView) findViewById(R.id.textView1);
         tv.setMovementMethod(new ScrollingMovementMethod());
 
-        TelephonyManager tel = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        String portStr = tel.getLine1Number().substring(tel.getLine1Number().length() - 4);
-        final String myPort = String.valueOf((Integer.parseInt(portStr) * 2));
-
-
-
         
         /*
          * Registers OnPTestClickListener for "button1" in the layout, which is the "PTest" button.
@@ -95,7 +89,7 @@ public class GroupMessengerActivity extends Activity {
                TextView displayText = (TextView) findViewById(R.id.textView1);
                //displayText.append(message);
                displayText.append("\n");
-               new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, message,myPort);
+               new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, message);
 
            }
        });
@@ -103,7 +97,6 @@ public class GroupMessengerActivity extends Activity {
     }
 
     private class ServerTask extends AsyncTask<ServerSocket, String, Void> {
-        Socket  socket = null;
 
         @Override
         protected Void doInBackground(ServerSocket... sockets) {
@@ -117,9 +110,9 @@ public class GroupMessengerActivity extends Activity {
                     DataInputStream reader = new DataInputStream((socket.getInputStream()));
                     currentMessage.append(reader.readUTF());
                     publishProgress(currentMessage.toString());
-                    content.put("key",String.valueOf(sequenceNumber));
+                    content.put("key",String.valueOf(sequenceNumber++));
                     content.put("value",currentMessage.toString());
-                    sequenceNumber++;
+                   // sequenceNumber++;
                     getContentResolver().insert(CONTENT_URI, content );
                     currentMessage.setLength(0);
                 }
@@ -155,7 +148,8 @@ public class GroupMessengerActivity extends Activity {
                 Log.i("doBack-client" ,"Started");
                 DataOutputStream toSend;
                 Socket sockets = null;
-                for(int i =0; i< 5;i++) {
+                int i=0;
+                while(i < ports.length) {
 
                     sockets = new Socket(InetAddress.getByAddress(new byte[]{10, 0, 2, 2}),
                             Integer.parseInt(ports[i]));
@@ -163,6 +157,7 @@ public class GroupMessengerActivity extends Activity {
                     toSend = new DataOutputStream(sockets.getOutputStream()); // Creating an object of DataOutputStream
                     toSend.writeUTF(msgToSend);     //writeChars(msgToSend); // // .writeUTF(msgToSend);
                     Log.i("Scokets- \t", " Writing to socket with port number--" +ports[i]);
+                    i++;
                 }
             } catch (UnknownHostException e) {
                 Log.e(TAG, "ClientTask UnknownHostException");

@@ -58,13 +58,19 @@ public class GroupMessengerProvider extends ContentProvider {
          * internal storage option that we used in PA1. If you want to use that option, please
          * take a look at the code for PA1.
          */
-
-      insertInInternalStorage(uri, values, getContext());
+        Log.i("Insert-", "Calling the insertInInternalStorage function");
+        uri= insertInInternalStorage(uri, values, getContext());
         Log.v("insert", values.toString());
         return uri;
     }
 
-
+    /* This utility function gets the key and the corresponding value and write it to the file(key is the filename)
+     * Returns Uri
+     * Parameters:
+     * uri - uri which is required to access the content provider
+     * ContentValues - stores the key and value pair
+     * Context- current context
+     */
     private Uri insertInInternalStorage(Uri uri, ContentValues contentValues, Context context)
     {
         FileOutputStream outputStream = null;
@@ -72,7 +78,7 @@ public class GroupMessengerProvider extends ContentProvider {
         {
             String fileName = contentValues.getAsString("key");
             String value = contentValues.getAsString("value");
-            if( fileName != null && value != null) {
+            if( (fileName != null) && (value != null)) {
                 outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
                 outputStream.write(value.getBytes());
                 outputStream.flush();
@@ -88,6 +94,9 @@ public class GroupMessengerProvider extends ContentProvider {
         {
             ex.printStackTrace();
         }
+//        finally {
+//            outputStream.close();
+//        }
 
         return uri;
     }
@@ -117,12 +126,23 @@ public class GroupMessengerProvider extends ContentProvider {
          * recommend building a MatrixCursor described at:
          * http://developer.android.com/reference/android/database/MatrixCursor.html
          */
+        Log.i("Query-","Calling the getQueryResult()");
         Cursor returnResult = getQueryResult(uri, selection, getContext());
         Log.v("query", selection);
         return returnResult;
     }
-    private  Cursor getQueryResult(Uri uri, final String selectionClause, Context context)
+
+    /* This utility function returns the query result based on the various conditions.
+     * Returns Cursor
+     * Parameters:
+     * uri - uri which is required to access the content provider
+     * Selection Clause - it will hold the key
+     * Context- current context
+     */
+    private  Cursor getQueryResult(Uri uri, String selectionClause, Context context)
     {
+        //Lol
+
         // References -https://developer.android.com/reference/android/database/MatrixCursor - Used to learn the concept of matrixCursor. It offers a function addRow(object[] columns) to add the row.
         try {
             // Creating an object of MatrixCursor which is basically the implementation of the cursor we can use
