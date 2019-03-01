@@ -79,7 +79,6 @@ public class GroupMessengerActivity extends Activity {
          * and send it to other AVDs.
          */
        final Button send_button = (Button) findViewById(R.id.button4);
-
        send_button.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -95,7 +94,7 @@ public class GroupMessengerActivity extends Activity {
        });
 
     }
-
+    // Reference- PA1
     private class ServerTask extends AsyncTask<ServerSocket, String, Void> {
 
         @Override
@@ -103,7 +102,7 @@ public class GroupMessengerActivity extends Activity {
             ServerSocket serverSocket = sockets[0];
             StringBuilder currentMessage=new StringBuilder();
             try   {
-                while (true) {    // Infinite loop to keep this code running all the time
+                while (true) {  // Infinite loop to keep this code running all the time
                     ContentValues content = new ContentValues();
                     /* Reading the data from the socket can be done by creating object of any byte/character stream. socket.getInputStream() returns an object of inputstream so it has to be wrapped in InputStreamReader in order to use character stream  */
                     Socket socket =serverSocket.accept();
@@ -138,7 +137,7 @@ public class GroupMessengerActivity extends Activity {
         }
     }
 
-
+    //Reference - PA1
     private class ClientTask extends AsyncTask<String, Void, Void> {
 
 
@@ -147,14 +146,14 @@ public class GroupMessengerActivity extends Activity {
             try {
                 Log.i("doBack-client" ,"Started");
                 DataOutputStream toSend;
-                Socket sockets = null;
+                Socket socket = null;
                 int i=0;
                 while(i < ports.length) {
 
-                    sockets = new Socket(InetAddress.getByAddress(new byte[]{10, 0, 2, 2}),
+                    socket = new Socket(InetAddress.getByAddress(new byte[]{10, 0, 2, 2}),
                             Integer.parseInt(ports[i]));
                     String msgToSend = msgs[0];
-                    toSend = new DataOutputStream(sockets.getOutputStream()); // Creating an object of DataOutputStream
+                    toSend = new DataOutputStream(socket.getOutputStream()); // Creating an object of DataOutputStream
                     toSend.writeUTF(msgToSend);     //writeChars(msgToSend); // // .writeUTF(msgToSend);
                     Log.i("Scokets- \t", " Writing to socket with port number--" +ports[i]);
                     i++;

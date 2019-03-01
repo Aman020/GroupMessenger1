@@ -94,9 +94,9 @@ public class GroupMessengerProvider extends ContentProvider {
         {
             ex.printStackTrace();
         }
-//        finally {
+        finally {
 //            outputStream.close();
-//        }
+        }
 
         return uri;
     }
